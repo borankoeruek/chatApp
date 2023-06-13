@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Chat list</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-item *ngFor="let chatItem of chatItems" (click)="openChat()" button>
+    <ion-avatar slot="start">
+      <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+    </ion-avatar>
+    <ion-label>{{ chatItem.name }}</ion-label>
+    <ion-badge slot="end">4</ion-badge>
+  </ion-item>
+</ion-content>
