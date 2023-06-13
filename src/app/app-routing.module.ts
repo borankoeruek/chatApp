@@ -1,19 +1,30 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {ToolBarComponent} from "./tool-bar/tool-bar.component";
+import { ToolBarComponent } from './components/tool-bar/tool-bar.component';
 
 const routes: Routes = [
-  { path: '', component: ToolBarComponent, children: [
+  {
+    path: '',
+    component: ToolBarComponent,
+    children: [
       {
-        path: '', pathMatch: 'full', redirectTo: 'chats',
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'chats',
       },
       {
         path: 'chats',
-        loadChildren: () => import('./chat-list/chat-list.module').then((m) => m.ChatListModule),
+        loadChildren: () =>
+          import('./components/chat-list/chat-list.module').then(
+            (m) => m.ChatListModule
+          ),
       },
       {
         path: 'settings',
-        loadChildren: () => import('./settings/settings.module').then((m) => m.SettingsModule),
+        loadChildren: () =>
+          import('./components/settings/settings.module').then(
+            (m) => m.SettingsModule
+          ),
       },
     ],
   },
@@ -21,6 +32,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
