@@ -15,14 +15,14 @@ const routes: Routes = [
       {
         path: 'chats',
         loadChildren: () =>
-          import('./components/chat-list/chat-list.module').then(
+          import('./modules/chat-list/chat-list.module').then(
             (m) => m.ChatListModule
           ),
       },
       {
         path: 'settings',
         loadChildren: () =>
-          import('./components/settings/settings.module').then(
+          import('./modules/settings/settings.module').then(
             (m) => m.SettingsModule
           ),
       },
