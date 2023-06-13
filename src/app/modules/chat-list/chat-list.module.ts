@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { ChatListComponent } from './chat-list.component';
-import { ChatComponent } from '../chat/chat.component';
+import { ChatListComponent } from './components/chat-list/chat-list.component';
+import { ChatComponent } from './components/chat/chat.component';
 import { IonicModule } from '@ionic/angular';
 
 const routes: Routes = [

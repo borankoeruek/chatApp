@@ -5,8 +5,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IonicModule } from '@ionic/angular';
 import { ToolBarComponent } from './components/tool-bar/tool-bar.component';
-import { SettingsComponent } from './components/settings/settings.component';
-import { ChatListComponent } from './components/chat-list/chat-list.component';
+import { SettingsComponent } from './modules/settings/components/settings/settings.component';
+import { ChatListComponent } from './modules/chat-list/components/chat-list/chat-list.component';
 
 @NgModule({
   declarations: [
