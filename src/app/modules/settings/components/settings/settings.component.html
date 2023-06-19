@@ -4,5 +4,20 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <div class="example-content">Settings content</div>
+  <div class="image-div">
+    <ion-card class="image-card" (click)="openSheet()">
+      <ion-img src="https://ionicframework.com/docs/img/demos/avatar.svg"></ion-img>
+    </ion-card>
+  </div>
+  <ion-card>
+    <ion-list lines="full">
+      <ion-item>
+        <ion-input label="Benutzername" labelPlacement="floating" [clearInput]="true"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="Benutzername" labelPlacement="floating" [clearInput]="true"></ion-input>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+
 </ion-content>
