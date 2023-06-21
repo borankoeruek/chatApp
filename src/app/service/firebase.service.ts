@@ -6,8 +6,11 @@ import {
   docData,
   DocumentData,
   Firestore,
+  query,
+  where,
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { Message } from '../models/message';
 
 @Injectable({
   providedIn: 'root',
@@ -17,12 +20,20 @@ export class FirebaseService {
 
   constructor() {}
 
-  public getChat(userId: string, chatId: string): Observable<DocumentData> {
-    return docData(doc(this.firestore, 'users', userId, 'chats', chatId));
+  public getChat(chatId: string): Observable<DocumentData> {
+    return docData(doc(this.firestore, 'chats', chatId));
   }
 
   public getChats(userId: string): Observable<DocumentData[]> {
-    return collectionData(collection(this.firestore, 'users', userId, 'chats'));
+    // todo: add where clause
+    return collectionData(collection(this.firestore, 'chats')) as Observable<
+      Message[]
+    >;
+
+    query(
+      collection(this.firestore, 'chats'),
+      where('users', 'array-contains', userId)
+    );
   }
 
   // todo: add username search
