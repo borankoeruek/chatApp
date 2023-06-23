@@ -1,0 +1,78 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // This rule allows anyone with your Firestore database reference to view, edit,
+    // and delete all data in your Firestore database. It is useful for getting
+    // started, but it is configured to expire after 30 days because it
+    // leaves your app open to attackers. At that time, all client
+    // requests to your Firestore database will be denied.
+    //
+    // Make sure to write security rules for your app before that time, or else
+    // all client requests to your Firestore database will be denied until you Update
+    // your rules
+
+    // Global variables
+
+    // function IS_IN_DEBUG_MODE() { return false; }
+    function CLIENT_DOCUMENT_DATA() { return request.resource.data; }
+
+
+    function validateModel(requiredFields) {
+      // check if all required fields are present
+      return CLIENT_DOCUMENT_DATA().keys().hasAll(requiredFields) && CLIENT_DOCUMENT_DATA().keys().hasOnly(requiredFields)
+
+      // todo: check if all required fields have the correct type
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // function isDocumentOwner(docId) {
+    //   return request.auth.uid == docId;
+    // }
+
+    // match /{document=**} {
+    //   allow read, write: if IS_IN_DEBUG_MODE();
+    // }
+
+    match /chats/{chatId} {
+      function CHAT_MODEL_KEYS() {return ['participants'];}
+      function CHAT_PATH() {return request.path;}
+
+      // todo: check if allow list is correct 
+      allow list, update, delete: if false;
+      allow get: if isSignedIn() && isChatParticipant();
+
+      // currently anyone can create a new chat with anyone
+      allow create: if isSignedIn() && validateModel(CHAT_MODEL_KEYS()) && willBeAChatParticipant(); 
+  
+
+      function isChatParticipant() {
+        return resource.data.participants.hasAny([request.auth.uid]);
+      }
+
+      function willBeAChatParticipant() {
+        return CLIENT_DOCUMENT_DATA().participants.hasAny([request.auth.uid]);
+      }
+
+      match /messages/{messageId} {
+        function MESSAGE_MODEL_KEYS() {return ['senderUid', 'text'];}
+
+        allow get, update, delete: if false;
+        allow list: if isSignedIn() && isChatParticipant();
+        allow create: if isSignedIn() && validateModel(MESSAGE_MODEL_KEYS()) && isSender() && isChatParticipant();
+
+        function isSender() {
+          return CLIENT_DOCUMENT_DATA().senderUid == request.auth.uid
+        }
+
+        function isChatParticipant() {
+          return get(CHAT_PATH()).data.participants.hasAny([request.auth.uid]);
+        }
+      }
+    }
+  }
+}
