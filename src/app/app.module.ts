@@ -9,6 +9,7 @@ import { ChatListComponent } from './modules/chat-list/components/chat-list/chat
 import { SettingsComponent } from './modules/settings/components/settings/settings.component';
 
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import fireBaseConfig from './service/firebaseConfig.json';
 
@@ -25,6 +26,7 @@ import fireBaseConfig from './service/firebaseConfig.json';
     IonicModule.forRoot(),
     provideFirebaseApp(() => initializeApp(fireBaseConfig)),
     provideFirestore(() => getFirestore()),
+    provideAuth(() => getAuth()),
   ],
   providers: [],
   bootstrap: [AppComponent],
