@@ -18,12 +18,15 @@ service cloud.firestore {
     // function IS_IN_DEBUG_MODE() { return false; }
     function CLIENT_DOCUMENT_DATA() { return request.resource.data; }
 
-
     function validateModel(requiredFields) {
       // check if all required fields are present
       return CLIENT_DOCUMENT_DATA().keys().hasAll(requiredFields) && CLIENT_DOCUMENT_DATA().keys().hasOnly(requiredFields)
 
       // todo: check if all required fields have the correct type
+    }
+
+    function hasValidTimestamp() {
+      return CLIENT_DOCUMENT_DATA().timestamp == request.time
     }
 
     function isSignedIn() {
@@ -39,12 +42,11 @@ service cloud.firestore {
     // }
 
     match /chats/{chatId} {
-      function CHAT_MODEL_KEYS() {return ['participants'];}
-      function CHAT_PATH() {return request.path;}
+      function CHAT_MODEL_KEYS() { return ['participants']; }
 
       // todo: check if allow list is correct 
-      allow list, update, delete: if false;
-      allow get: if isSignedIn() && isChatParticipant();
+      allow update, delete: if false;
+      allow get, list: if isSignedIn() && isChatParticipant();
 
       // currently anyone can create a new chat with anyone
       allow create: if isSignedIn() && validateModel(CHAT_MODEL_KEYS()) && willBeAChatParticipant(); 
@@ -59,18 +61,19 @@ service cloud.firestore {
       }
 
       match /messages/{messageId} {
-        function MESSAGE_MODEL_KEYS() {return ['senderUid', 'text'];}
+        function MESSAGE_MODEL_KEYS() { return ['senderUid', 'text', "timestamp"]; }
 
         allow get, update, delete: if false;
         allow list: if isSignedIn() && isChatParticipant();
-        allow create: if isSignedIn() && validateModel(MESSAGE_MODEL_KEYS()) && isSender() && isChatParticipant();
-
+        allow create: if isSignedIn() && validateModel(MESSAGE_MODEL_KEYS()) && hasValidTimestamp() && isSender() && isChatParticipant();
+        
         function isSender() {
           return CLIENT_DOCUMENT_DATA().senderUid == request.auth.uid
         }
 
         function isChatParticipant() {
-          return get(CHAT_PATH()).data.participants.hasAny([request.auth.uid]);
+          let chat = get(/databases/$(database)/documents/chats/$(chatId));
+          return chat != null && chat.data.participants.hasAny([request.auth.uid]);
         }
       }
     }
