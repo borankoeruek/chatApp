@@ -12,25 +12,25 @@ import {
   where,
 } from '@angular/fire/firestore';
 import { from, Observable } from 'rxjs';
-import { Chat } from '../models/chat';
-import { Message } from '../models/message';
+import { Chat } from '../firebase-send-models/chat';
+import { Message } from '../firebase-send-models/message';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FirebaseService {
-  public static readonly firestore: Firestore = inject(Firestore);
-  public static readonly auth: Auth = inject(Auth);
+  public readonly firestore: Firestore = inject(Firestore);
+  public readonly auth: Auth = inject(Auth);
 
   constructor() {}
 
-  public static getMessagesFromChat(chatId: string): Observable<Message[]> {
+  public getMessagesFromChat(chatId: string): Observable<Message[]> {
     return collectionData(
       query(collection(this.firestore, 'chats', chatId, 'messages'), limit(100))
     ) as Observable<Message[]>;
   }
 
-  public static sendMessage(
+  public sendMessage(
     text: string,
     chatId: string
   ): Observable<DocumentReference> {
@@ -38,9 +38,6 @@ export class FirebaseService {
     message.senderUid = this.auth.currentUser?.uid as string;
     message.text = text;
     message.timestamp = serverTimestamp();
-
-    // todo: check if this delete is really needed
-    delete message.id;
 
     return from(
       addDoc(
@@ -50,7 +47,7 @@ export class FirebaseService {
     );
   }
 
-  public static getChats(userId: string): Observable<Chat[]> {
+  public getChats(userId: string): Observable<Chat[]> {
     return collectionData(
       query(
         collection(this.firestore, 'chats'),
@@ -59,17 +56,21 @@ export class FirebaseService {
     ) as Observable<Chat[]>;
   }
 
-  public static createNewChat(
-    participantUid: string
+  public createNewChat(
+    participantUid: string,
+    participantName: string
   ): Observable<DocumentReference> {
     const chat = new Chat();
     chat.participants.push(
-      this.auth.currentUser?.uid as string,
-      participantUid
+      {
+        uid: this.auth.currentUser?.uid as string,
+        name: this.auth.currentUser?.displayName as string,
+      },
+      {
+        uid: participantUid,
+        name: participantName,
+      }
     );
-
-    // todo: check if this delete is really needed
-    delete chat.id;
 
     return from(addDoc(collection(this.firestore, 'chats'), <Chat>chat));
   }
