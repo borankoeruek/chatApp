@@ -3,11 +3,19 @@
     <ion-title>Chat list</ion-title>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-searchbar></ion-searchbar>
+    <ion-searchbar
+      animated
+      placeholder="Search"
+      (ionInput)="filterChatsByUsername($event)"
+    ></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-item *ngFor="let chat of chats" (click)="openChat(chat.id)" button>
+  <ion-item
+    *ngFor="let chat of filteredChats"
+    (click)="openChat(chat.id)"
+    button
+  >
     <ion-avatar slot="start">
       <img
         alt="Silhouette of a person's head"
