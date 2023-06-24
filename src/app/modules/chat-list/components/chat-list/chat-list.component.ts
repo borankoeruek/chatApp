@@ -11,12 +11,14 @@ import { FirebaseService } from 'src/app/service/firebase.service';
   styleUrls: ['./chat-list.component.scss'],
 })
 export class ChatListComponent {
-  public chats: Identifiable<Chat>[] = [
+  public filteredChats: Identifiable<Chat>[];
+
+  private chats: Identifiable<Chat>[] = [
     {
       id: '1',
       value: {
         participants: [
-          { uid: '1', name: '1' },
+          { uid: '1', name: 'ewa' },
           { uid: '2', name: '2' },
         ],
       },
@@ -25,7 +27,7 @@ export class ChatListComponent {
       id: '2',
       value: {
         participants: [
-          { uid: '1', name: '1' },
+          { uid: '1', name: 'wasgehtab' },
           { uid: '3', name: '3' },
         ],
       },
@@ -38,11 +40,22 @@ export class ChatListComponent {
     private readonly firebaseService: FirebaseService
   ) {}
 
+  public ngOnInit(): void {
+    this.filteredChats = this.chats;
+  }
+
   public openChat(chatId: string): void {
     this.router.navigate(['chat', chatId], { relativeTo: this.route });
   }
 
-  public filterChats(): void {}
+  public filterChatsByUsername(event: any): void {
+    const username = event?.target?.value;
+    this.filteredChats = this.chats.filter((chat) =>
+      chat.value.participants.some((participant) =>
+        participant.name.includes(username)
+      )
+    );
+  }
 
   public getParticipantsWithoutCurrentUser(
     participants: Participant[]
