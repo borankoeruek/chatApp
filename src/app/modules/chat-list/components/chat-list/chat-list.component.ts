@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Identifiable } from 'src/app/firebase-receive-models/Identifiable';
+import { Chat } from 'src/app/firebase-send-models/chat';
+import { Participant } from 'src/app/firebase-send-models/participant';
+import { FirebaseService } from 'src/app/service/firebase.service';
 
 @Component({
   selector: 'app-chat-list',
@@ -7,20 +11,45 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./chat-list.component.scss'],
 })
 export class ChatListComponent {
-  chatItems: any = [
-    { name: 'Jochen' },
-    { name: 'Detlef' },
-    { name: 'Karen' },
-    { name: 'Eugen' },
-    { name: 'Harry' },
+  public chats: Identifiable<Chat>[] = [
+    {
+      id: '1',
+      value: {
+        participants: [
+          { uid: '1', name: '1' },
+          { uid: '2', name: '2' },
+        ],
+      },
+    },
+    {
+      id: '2',
+      value: {
+        participants: [
+          { uid: '1', name: '1' },
+          { uid: '3', name: '3' },
+        ],
+      },
+    },
   ];
 
   constructor(
     private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly firebaseService: FirebaseService
   ) {}
 
-  public openChat(): void {
-    this.router.navigate(['chat'], { relativeTo: this.route });
+  public openChat(chatId: string): void {
+    this.router.navigate(['chat', chatId], { relativeTo: this.route });
+  }
+
+  public filterChats(): void {}
+
+  public getParticipantsWithoutCurrentUser(
+    participants: Participant[]
+  ): Participant[] {
+    return participants.filter(
+      (participant) =>
+        participant.uid !== this.firebaseService.auth.currentUser?.uid
+    );
   }
 }
