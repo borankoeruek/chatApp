@@ -4,6 +4,7 @@ import { Identifiable } from 'src/app/firebase-receive-models/Identifiable';
 import { Chat } from 'src/app/firebase-send-models/chat';
 import { Participant } from 'src/app/firebase-send-models/participant';
 import { FirebaseService } from 'src/app/service/firebase.service';
+import { getParticipantsWithoutCurrentUser } from 'src/app/util/helpers';
 
 @Component({
   selector: 'app-chat-list',
@@ -41,11 +42,21 @@ export class ChatListComponent {
   ) {}
 
   public ngOnInit(): void {
-    this.filteredChats = this.chats;
+    this.loadChats();
   }
 
-  public openChat(chatId: string): void {
-    this.router.navigate(['chat', chatId], { relativeTo: this.route });
+  public openChat(chat: Identifiable<Chat>): void {
+    this.router.navigate(['chat', chat.id], {
+      relativeTo: this.route,
+      state: chat,
+    });
+  }
+
+  private loadChats(): void {
+    this.firebaseService.getChats().subscribe((chats) => {
+      this.chats = chats;
+      this.filteredChats = chats;
+    });
   }
 
   public filterChatsByUsername(event: any): void {
@@ -57,12 +68,10 @@ export class ChatListComponent {
     );
   }
 
-  public getParticipantsWithoutCurrentUser(
-    participants: Participant[]
-  ): Participant[] {
-    return participants.filter(
-      (participant) =>
-        participant.uid !== this.firebaseService.auth.currentUser?.uid
+  public getParticipant(participants: Participant[]): Participant {
+    return getParticipantsWithoutCurrentUser(
+      participants,
+      this.firebaseService
     );
   }
 }
