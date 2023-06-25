@@ -9,7 +9,7 @@ const routes: Routes = [
     component: ChatListComponent,
   },
   {
-    path: 'chat/:id',
+    path: 'chat/:chatId',
     component: ChatComponent,
   },
 ];
