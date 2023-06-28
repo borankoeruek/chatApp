@@ -1,0 +1,16 @@
+ion-item:last-child {
+  --inner-border-width: 0;
+}
+ion-img {
+}
+.image-div {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+.image-card {
+  width: 50%;
+}
+.image-card:hover {
+  background-color: rgba(255,255,255,0.5);
+}
