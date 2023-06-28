@@ -4,6 +4,9 @@ import {
   addDoc,
   collection,
   collectionData,
+  doc,
+  docData,
+  DocumentData,
   DocumentReference,
   Firestore,
   limit,
@@ -11,7 +14,8 @@ import {
   serverTimestamp,
   where,
 } from '@angular/fire/firestore';
-import { from, Observable } from 'rxjs';
+import { combineLatest, from, Observable } from 'rxjs';
+import { Identifiable } from '../firebase-receive-models/Identifiable';
 import { Chat } from '../firebase-send-models/chat';
 import { Message } from '../firebase-send-models/message';
 
@@ -23,6 +27,10 @@ export class FirebaseService {
   public readonly auth: Auth = inject(Auth);
 
   constructor() {}
+
+  public login(): void {
+    // todo:
+  }
 
   public getMessagesFromChat(chatId: string): Observable<Message[]> {
     return collectionData(
@@ -47,13 +55,27 @@ export class FirebaseService {
     );
   }
 
-  public getChats(userId: string): Observable<Chat[]> {
-    return collectionData(
-      query(
-        collection(this.firestore, 'chats'),
-        where('participants', 'array-contains', userId)
-      )
-    ) as Observable<Chat[]>;
+  public getChats(): Observable<Identifiable<Chat>[]> {
+    const ref = query(
+      collection(this.firestore, 'chats'),
+      where('participants', 'array-contains', this.auth.currentUser?.uid)
+    );
+
+    const objects = collectionData(ref, { idField: 'id' });
+
+    return this.convertDocumentsToIdentifiables<Chat>(
+      objects as Observable<Chat[]>,
+      objects as Observable<Identifiable<null>[]>
+    );
+  }
+
+  public getChat(chatId: string): Observable<Identifiable<Chat>> {
+    const ref = doc(this.firestore, 'chats', chatId);
+
+    return this.convertDocumentToIdentifiable<Chat>(
+      docData(ref) as Observable<Chat>,
+      ref
+    );
   }
 
   public createNewChat(
@@ -73,6 +95,45 @@ export class FirebaseService {
     );
 
     return from(addDoc(collection(this.firestore, 'chats'), <Chat>chat));
+  }
+
+  private convertDocumentToIdentifiable<T>(
+    object: Observable<T>,
+    document: DocumentReference<DocumentData>
+  ): Observable<Identifiable<T>> {
+    return new Observable<Identifiable<T>>((subscription) => {
+      object.subscribe((object: T) => {
+        console.log('object', object);
+        const identifiable: Identifiable<T> = {
+          id: document.id,
+          value: object,
+        };
+
+        subscription.next(identifiable);
+      });
+    });
+  }
+
+  public convertDocumentsToIdentifiables<T>(
+    objects: Observable<T[]>,
+    ids: Observable<Identifiable<null>[]>
+  ): Observable<Identifiable<T>[]> {
+    return new Observable<Identifiable<T>[]>((subscription) => {
+      combineLatest([objects, ids]).subscribe(([objects, ids]) => {
+        const identifiables: Identifiable<T>[] = [];
+
+        objects.forEach((object: T, index: number) => {
+          const identifiable: Identifiable<T> = {
+            id: ids[index].id,
+            value: object,
+          };
+
+          identifiables.push(identifiable);
+        });
+
+        subscription.next(identifiables);
+      });
+    });
   }
 
   // todo: add username search
