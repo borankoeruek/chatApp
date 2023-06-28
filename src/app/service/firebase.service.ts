@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Auth } from '@angular/fire/auth';
+import { Auth, User } from '@angular/fire/auth';
 import {
   addDoc,
   collection,
@@ -30,6 +30,15 @@ export class FirebaseService {
 
   public login(): void {
     // todo:
+  }
+
+  public getCurrentUserState() {
+    return new Observable<User | null>((subscription) => {
+      this.auth.onAuthStateChanged((user) => {
+        subscription.next(user);
+        subscription.complete();
+      });
+    });
   }
 
   public getMessagesFromChat(chatId: string): Observable<Message[]> {
