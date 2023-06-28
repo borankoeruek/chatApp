@@ -3,19 +3,21 @@
     <ion-title>Chat list</ion-title>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-searchbar></ion-searchbar>
+    <ion-searchbar
+      animated
+      placeholder="Search"
+      (ionInput)="filterChatsByUsername($event)"
+    ></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-item *ngFor="let chat of chats" (click)="openChat(chat.id)" button>
+  <ion-item *ngFor="let chat of filteredChats" (click)="openChat(chat)" button>
     <ion-avatar slot="start">
       <img
         alt="Silhouette of a person's head"
         src="https://ionicframework.com/docs/img/demos/avatar.svg"
       />
     </ion-avatar>
-    <ion-label>{{
-      getParticipantsWithoutCurrentUser(chat.value.participants)[0].name
-    }}</ion-label>
+    <ion-label>{{ getParticipant(chat.value.participants).name }}</ion-label>
   </ion-item>
 </ion-content>
