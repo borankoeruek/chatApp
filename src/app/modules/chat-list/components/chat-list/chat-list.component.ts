@@ -12,15 +12,15 @@ import { getParticipantsWithoutCurrentUser } from 'src/app/util/helpers';
   styleUrls: ['./chat-list.component.scss'],
 })
 export class ChatListComponent {
-  public filteredChats: Identifiable<Chat>[];
+  public displayAddUserDialog: boolean = false;
 
-  private chats: Identifiable<Chat>[] = [
+  public filteredChats: Identifiable<Chat>[] = [
     {
       id: '1',
       value: {
         participants: [
-          { uid: '1', name: 'ewa' },
-          { uid: '2', name: '2' },
+          { uid: '1', displayName: 'ewa' },
+          { uid: '2', displayName: '2' },
         ],
       },
     },
@@ -28,8 +28,29 @@ export class ChatListComponent {
       id: '2',
       value: {
         participants: [
-          { uid: '1', name: 'wasgehtab' },
-          { uid: '3', name: '3' },
+          { uid: '1', displayName: 'wasgehtab' },
+          { uid: '3', displayName: '3' },
+        ],
+      },
+    },
+  ];
+
+  private chats: Identifiable<Chat>[] = [
+    {
+      id: '1',
+      value: {
+        participants: [
+          { uid: '1', displayName: 'ewa' },
+          { uid: '2', displayName: '2' },
+        ],
+      },
+    },
+    {
+      id: '2',
+      value: {
+        participants: [
+          { uid: '1', displayName: 'wasgehtab' },
+          { uid: '3', displayName: '3' },
         ],
       },
     },
@@ -54,16 +75,17 @@ export class ChatListComponent {
 
   private loadChats(): void {
     this.firebaseService.getChats().subscribe((chats) => {
-      this.chats = chats;
-      this.filteredChats = chats;
+      // this.chats = chats;
+      // this.filteredChats = chats;
     });
   }
 
   public filterChatsByUsername(event: any): void {
     const username = event?.target?.value;
+
     this.filteredChats = this.chats.filter((chat) =>
       chat.value.participants.some((participant) =>
-        participant.name.includes(username)
+        participant.displayName.includes(username)
       )
     );
   }
