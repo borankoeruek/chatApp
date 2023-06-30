@@ -18,6 +18,7 @@ import { combineLatest, from, Observable } from 'rxjs';
 import { Identifiable } from '../firebase-receive-models/Identifiable';
 import { Chat } from '../firebase-send-models/chat';
 import { Message } from '../firebase-send-models/message';
+import { Participant } from '../firebase-send-models/participant';
 import { UserPublic } from '../firebase-send-models/user-public';
 
 @Injectable({
@@ -66,9 +67,17 @@ export class FirebaseService {
   }
 
   public getChats(): Observable<Identifiable<Chat>[]> {
+    const participant = new Participant();
+    participant.uid = this.auth.currentUser?.uid as string;
+    participant.displayName = this.auth.currentUser?.displayName as string;
+
     const ref = query(
       collection(this.firestore, 'chats'),
-      where('participants', 'array-contains', this.auth.currentUser?.uid)
+      where(
+        'participants',
+        'array-contains',
+        this.toFirebaseObject(participant)
+      )
     );
 
     const objects = collectionData(ref, { idField: 'id' });
@@ -93,6 +102,7 @@ export class FirebaseService {
     participantName: string
   ): Observable<DocumentReference> {
     const chat = new Chat();
+    chat.participants = [];
     chat.participants.push(
       {
         uid: this.auth.currentUser?.uid as string,
@@ -104,16 +114,18 @@ export class FirebaseService {
       }
     );
 
-    return from(addDoc(collection(this.firestore, 'chats'), <Chat>chat));
+    return from(
+      addDoc(collection(this.firestore, 'chats'), this.toFirebaseObject(chat))
+    );
   }
 
   // todo: add username search
   public searchUsername(
-    username: string
+    displayName: string
   ): Observable<Identifiable<UserPublic>[]> {
     const ref = query(
       collection(this.firestore, 'users_public'),
-      where('username', '==', username)
+      where('displayName', '==', displayName)
     );
 
     const objects = collectionData(ref, { idField: 'id' });
@@ -161,6 +173,10 @@ export class FirebaseService {
         subscription.next(identifiables);
       });
     });
+  }
+
+  private toFirebaseObject(object: Object): object {
+    return JSON.parse(JSON.stringify(object));
   }
 
   // todo: add chat request
