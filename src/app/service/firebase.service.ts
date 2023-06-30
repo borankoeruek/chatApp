@@ -18,6 +18,7 @@ import { combineLatest, from, Observable } from 'rxjs';
 import { Identifiable } from '../firebase-receive-models/Identifiable';
 import { Chat } from '../firebase-send-models/chat';
 import { Message } from '../firebase-send-models/message';
+import { UserPublic } from '../firebase-send-models/user-public';
 
 @Injectable({
   providedIn: 'root',
@@ -95,15 +96,32 @@ export class FirebaseService {
     chat.participants.push(
       {
         uid: this.auth.currentUser?.uid as string,
-        name: this.auth.currentUser?.displayName as string,
+        displayName: this.auth.currentUser?.displayName as string,
       },
       {
         uid: participantUid,
-        name: participantName,
+        displayName: participantName,
       }
     );
 
     return from(addDoc(collection(this.firestore, 'chats'), <Chat>chat));
+  }
+
+  // todo: add username search
+  public searchUsername(
+    username: string
+  ): Observable<Identifiable<UserPublic>[]> {
+    const ref = query(
+      collection(this.firestore, 'users_public'),
+      where('username', '==', username)
+    );
+
+    const objects = collectionData(ref, { idField: 'id' });
+
+    return this.convertDocumentsToIdentifiables<UserPublic>(
+      objects as Observable<UserPublic[]>,
+      objects as Observable<Identifiable<null>[]>
+    );
   }
 
   private convertDocumentToIdentifiable<T>(
@@ -123,7 +141,7 @@ export class FirebaseService {
     });
   }
 
-  public convertDocumentsToIdentifiables<T>(
+  private convertDocumentsToIdentifiables<T>(
     objects: Observable<T[]>,
     ids: Observable<Identifiable<null>[]>
   ): Observable<Identifiable<T>[]> {
@@ -145,6 +163,5 @@ export class FirebaseService {
     });
   }
 
-  // todo: add username search
   // todo: add chat request
 }
