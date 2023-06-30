@@ -12,6 +12,7 @@
       <ion-searchbar
         animated
         placeholder="Search"
+        [debounce]="1000"
         (ionInput)="searchUsername($event)"
       ></ion-searchbar>
 
