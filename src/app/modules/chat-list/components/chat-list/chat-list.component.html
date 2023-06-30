@@ -15,6 +15,10 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
+  <ion-item *ngIf="filteredChats.length === 0">
+    <ion-label> No chats found. Try adding a new user. </ion-label>
+  </ion-item>
+
   <ion-item *ngFor="let chat of filteredChats" (click)="openChat(chat)" button>
     <ion-avatar slot="start">
       <img
