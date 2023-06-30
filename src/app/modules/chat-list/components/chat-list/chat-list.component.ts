@@ -14,47 +14,9 @@ import { getParticipantsWithoutCurrentUser } from 'src/app/util/helpers';
 export class ChatListComponent {
   public displayAddUserDialog: boolean = false;
 
-  public filteredChats: Identifiable<Chat>[] = [
-    {
-      id: '1',
-      value: {
-        participants: [
-          { uid: '1', displayName: 'ewa' },
-          { uid: '2', displayName: '2' },
-        ],
-      },
-    },
-    {
-      id: '2',
-      value: {
-        participants: [
-          { uid: '1', displayName: 'wasgehtab' },
-          { uid: '3', displayName: '3' },
-        ],
-      },
-    },
-  ];
+  public filteredChats: Identifiable<Chat>[] = [];
 
-  private chats: Identifiable<Chat>[] = [
-    {
-      id: '1',
-      value: {
-        participants: [
-          { uid: '1', displayName: 'ewa' },
-          { uid: '2', displayName: '2' },
-        ],
-      },
-    },
-    {
-      id: '2',
-      value: {
-        participants: [
-          { uid: '1', displayName: 'wasgehtab' },
-          { uid: '3', displayName: '3' },
-        ],
-      },
-    },
-  ];
+  private chats: Identifiable<Chat>[] = [];
 
   constructor(
     private readonly router: Router,
@@ -75,8 +37,8 @@ export class ChatListComponent {
 
   private loadChats(): void {
     this.firebaseService.getChats().subscribe((chats) => {
-      // this.chats = chats;
-      // this.filteredChats = chats;
+      this.chats = chats;
+      this.filteredChats = chats;
     });
   }
 
