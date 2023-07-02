@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { Timestamp } from '@angular/fire/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Identifiable } from 'src/app/firebase-receive-models/Identifiable';
+import { MessageReceive } from 'src/app/firebase-receive-models/message-receive';
 import { Chat } from 'src/app/firebase-send-models/chat';
-import { Message } from 'src/app/firebase-send-models/message';
 import { Participant } from 'src/app/firebase-send-models/participant';
 import { FirebaseService } from 'src/app/service/firebase.service';
 import { getParticipantsWithoutCurrentUser } from 'src/app/util/helpers';
@@ -13,11 +14,25 @@ import { getParticipantsWithoutCurrentUser } from 'src/app/util/helpers';
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent {
-  public participant: Participant;
+  public chat: Identifiable<Chat>;
 
-  private chat: Identifiable<Chat>;
-
-  private messages: Message[];
+  public messages: MessageReceive[] = [
+    {
+      text: 'tesaiushdiuashdiuashidhsaiudhasi aiudhiuashduiashd uiashdiuashdt',
+      timestamp: new Timestamp(new Date().getTime() / 1000, 123),
+      senderUid: 'EvNCwSbXCGNodjoff98CoEns4773',
+    },
+    {
+      text: 'tesaiushdiuashdiuashidhsaiudhasi aiudhiuashduiashd uiashdiuashdt',
+      timestamp: new Timestamp(new Date().getTime() / 1000, 0),
+      senderUid: '1',
+    },
+    {
+      text: 'tesaiushdiuashdiuashidhsaiudhasi aiudhiuashduiashd uiashdiuashdt',
+      timestamp: new Timestamp(new Date().getTime() / 1000, 123),
+      senderUid: 'EvNCwSbXCGNodjoff98CoEns4773',
+    },
+  ];
 
   constructor(
     private readonly router: Router,
@@ -33,8 +48,10 @@ export class ChatComponent {
     const routerState = this.router.getCurrentNavigation()?.extras?.state;
     console.log(routerState);
     if (routerState != null) {
+      console.log(routerState);
       this.chat = routerState as Identifiable<Chat>;
     } else {
+      console.log('else');
       this.route.params.subscribe((params) => {
         console.log(params);
         this.firebaseService
@@ -42,10 +59,6 @@ export class ChatComponent {
           .subscribe((identifiableChat) => {
             this.chat = identifiableChat;
             this.loadMessages();
-            this.participant = getParticipantsWithoutCurrentUser(
-              identifiableChat.value.participants,
-              this.firebaseService
-            );
           });
       });
     }
@@ -57,5 +70,30 @@ export class ChatComponent {
       .subscribe((messages) => {
         this.messages = messages;
       });
+  }
+
+  public isSender(message: MessageReceive): boolean {
+    return message.senderUid === this.firebaseService.auth.currentUser?.uid;
+  }
+
+  public getParticipant(participants: Participant[]): Participant {
+    return getParticipantsWithoutCurrentUser(
+      participants,
+      this.firebaseService
+    );
+  }
+
+  public getTimeFromTimestamp(timestamp: Timestamp): string {
+    const date = timestamp.toDate();
+
+    date.toLocaleDateString('de-DE', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    console.log(date);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    return `${hours}:${minutes}`;
   }
 }
