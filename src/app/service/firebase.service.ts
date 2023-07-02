@@ -16,6 +16,7 @@ import {
 } from '@angular/fire/firestore';
 import { combineLatest, from, Observable } from 'rxjs';
 import { Identifiable } from '../firebase-receive-models/Identifiable';
+import { MessageReceive } from '../firebase-receive-models/message-receive';
 import { Chat } from '../firebase-send-models/chat';
 import { Message } from '../firebase-send-models/message';
 import { Participant } from '../firebase-send-models/participant';
@@ -43,10 +44,10 @@ export class FirebaseService {
     });
   }
 
-  public getMessagesFromChat(chatId: string): Observable<Message[]> {
+  public getMessagesFromChat(chatId: string): Observable<MessageReceive[]> {
     return collectionData(
       query(collection(this.firestore, 'chats', chatId, 'messages'), limit(100))
-    ) as Observable<Message[]>;
+    ) as Observable<MessageReceive[]>;
   }
 
   public sendMessage(
