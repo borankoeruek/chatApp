@@ -12,28 +12,12 @@ import { getParticipantsWithoutCurrentUser } from 'src/app/util/helpers';
   styleUrls: ['./chat-list.component.scss'],
 })
 export class ChatListComponent {
-  public filteredChats: Identifiable<Chat>[];
+  public displayAddUserDialog: boolean = false;
 
-  private chats: Identifiable<Chat>[] = [
-    {
-      id: '1',
-      value: {
-        participants: [
-          { uid: '1', name: 'ewa' },
-          { uid: '2', name: '2' },
-        ],
-      },
-    },
-    {
-      id: '2',
-      value: {
-        participants: [
-          { uid: '1', name: 'wasgehtab' },
-          { uid: '3', name: '3' },
-        ],
-      },
-    },
-  ];
+  public filteredChats: Identifiable<Chat>[] = [];
+
+  private chats: Identifiable<Chat>[] = [];
+
 
   constructor(
     private readonly router: Router,
@@ -61,9 +45,11 @@ export class ChatListComponent {
 
   public filterChatsByUsername(event: any): void {
     const username = event?.target?.value;
+
     this.filteredChats = this.chats.filter((chat) =>
       chat.value.participants.some((participant) =>
-        participant.name.includes(username)
+        participant.displayName.includes(username)
+
       )
     );
   }

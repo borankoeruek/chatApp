@@ -16,8 +16,12 @@ import {
 } from '@angular/fire/firestore';
 import { combineLatest, from, Observable } from 'rxjs';
 import { Identifiable } from '../firebase-receive-models/Identifiable';
+import { MessageReceive } from '../firebase-receive-models/message-receive';
 import { Chat } from '../firebase-send-models/chat';
 import { Message } from '../firebase-send-models/message';
+import { Participant } from '../firebase-send-models/participant';
+import { UserPublic } from '../firebase-send-models/user-public';
+
 
 @Injectable({
   providedIn: 'root',
@@ -41,10 +45,11 @@ export class FirebaseService {
     });
   }
 
-  public getMessagesFromChat(chatId: string): Observable<Message[]> {
+  public getMessagesFromChat(chatId: string): Observable<MessageReceive[]> {
     return collectionData(
       query(collection(this.firestore, 'chats', chatId, 'messages'), limit(100))
-    ) as Observable<Message[]>;
+    ) as Observable<MessageReceive[]>;
+
   }
 
   public sendMessage(
@@ -65,9 +70,18 @@ export class FirebaseService {
   }
 
   public getChats(): Observable<Identifiable<Chat>[]> {
+    const participant = new Participant();
+    participant.uid = this.auth.currentUser?.uid as string;
+    participant.displayName = this.auth.currentUser?.displayName as string;
+
     const ref = query(
       collection(this.firestore, 'chats'),
-      where('participants', 'array-contains', this.auth.currentUser?.uid)
+      where(
+        'participants',
+        'array-contains',
+        this.toFirebaseObject(participant)
+      )
+
     );
 
     const objects = collectionData(ref, { idField: 'id' });
@@ -92,18 +106,39 @@ export class FirebaseService {
     participantName: string
   ): Observable<DocumentReference> {
     const chat = new Chat();
+    chat.participants = [];
     chat.participants.push(
       {
         uid: this.auth.currentUser?.uid as string,
-        name: this.auth.currentUser?.displayName as string,
+        displayName: this.auth.currentUser?.displayName as string,
       },
       {
         uid: participantUid,
-        name: participantName,
+        displayName: participantName,
       }
     );
 
-    return from(addDoc(collection(this.firestore, 'chats'), <Chat>chat));
+    return from(
+      addDoc(collection(this.firestore, 'chats'), this.toFirebaseObject(chat))
+    );
+  }
+
+  // todo: add username search
+  public searchUsername(
+    displayName: string
+  ): Observable<Identifiable<UserPublic>[]> {
+    const ref = query(
+      collection(this.firestore, 'users_public'),
+      where('displayName', '==', displayName)
+    );
+
+    const objects = collectionData(ref, { idField: 'id' });
+
+    return this.convertDocumentsToIdentifiables<UserPublic>(
+      objects as Observable<UserPublic[]>,
+      objects as Observable<Identifiable<null>[]>
+    );
+
   }
 
   private convertDocumentToIdentifiable<T>(
@@ -123,7 +158,8 @@ export class FirebaseService {
     });
   }
 
-  public convertDocumentsToIdentifiables<T>(
+  private convertDocumentsToIdentifiables<T>(
+
     objects: Observable<T[]>,
     ids: Observable<Identifiable<null>[]>
   ): Observable<Identifiable<T>[]> {
@@ -145,6 +181,10 @@ export class FirebaseService {
     });
   }
 
-  // todo: add username search
+  private toFirebaseObject(object: Object): object {
+    return JSON.parse(JSON.stringify(object));
+  }
+
+
   // todo: add chat request
 }

@@ -1,0 +1,69 @@
+.chat-content {
+  --ion-background-color: #e6e6e6;
+
+  .no-messages-info {
+    display: flex;
+    justify-content: center;
+  }
+
+  .message-container {
+    display: flex;
+    justify-content: end;
+    padding: 5px;
+
+    .message {
+      max-width: 70%;
+      width: fit-content;
+      position: relative;
+      padding: 20px 30px;
+      padding-bottom: 10px;
+      border-radius: 50rem;
+
+      .message-content {
+        display: flex;
+        flex-direction: column;
+
+        .timestamp {
+          margin-left: auto;
+          color: lightslategray;
+        }
+      }
+
+      &.sender {
+        background-color: rgb(217, 253, 211);
+        border-bottom-right-radius: 0;
+
+        &::after {
+          content: "";
+          display: block;
+          position: absolute;
+          top: 100%;
+          width: 25px;
+          height: 10px;
+          background-color: inherit;
+
+          right: 0;
+          clip-path: polygon(0 0, 100% 0, 100% 100%);
+        }
+      }
+
+      &.receiver {
+        background-color: white;
+        border-bottom-left-radius: 0;
+
+        &::after {
+          content: "";
+          display: block;
+          position: absolute;
+          top: 100%;
+          width: 25px;
+          height: 10px;
+          background-color: inherit;
+
+          left: 0;
+          clip-path: polygon(100% 0, 0 100%, 0 0);
+        }
+      }
+    }
+  }
+}

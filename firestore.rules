@@ -41,9 +41,22 @@ service cloud.firestore {
     //   allow read, write: if IS_IN_DEBUG_MODE();
     // }
 
+    match /users_public/{userId} {
+      function USER_PUBLIC_MODEL_KEYS() { return ['displayName', 'photoUrl']; }
+
+      allow read: if isSignedIn() && validateModel(USER_PUBLIC_MODEL_KEYS());
+      allow create, update, delete: if false;
+
+      match /user_private/{userId} {
+
+        allow read: false;
+        allow write: if false;
+      }
+    }
+
     match /chats/{chatId} {
       function CHAT_MODEL_KEYS() { return ['participants']; }
-      function USER_PARTICIPANT_MAP() { return { 'uid': request.auth.uid, 'name': request.auth.token.name }; }
+      function USER_PARTICIPANT_MAP() { return { 'uid': request.auth.uid, 'displayName': request.auth.token.name }; }
 
       // todo: check if allow list is correct 
       allow update, delete: if false;

@@ -1,0 +1,27 @@
+<ion-modal [isOpen]="isModalOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Create New Chat</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="setOpen(false)">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-searchbar
+        animated
+        placeholder="Search"
+        [debounce]="1000"
+        (ionInput)="searchUsername($event)"
+      ></ion-searchbar>
+
+      <ion-item *ngFor="let user of users" (click)="createNewChat(user)" button>
+        <ion-avatar slot="start">
+          <img alt="profile picture" src="{{ user.value.photoUrl }}" />
+        </ion-avatar>
+        <ion-label>{{ user.value.displayName }}</ion-label>
+      </ion-item>
+    </ion-content>
+  </ng-template>
+</ion-modal>
