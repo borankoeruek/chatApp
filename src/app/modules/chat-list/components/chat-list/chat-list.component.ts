@@ -18,6 +18,7 @@ export class ChatListComponent {
 
   private chats: Identifiable<Chat>[] = [];
 
+
   constructor(
     private readonly router: Router,
     private readonly route: ActivatedRoute,
@@ -48,6 +49,7 @@ export class ChatListComponent {
     this.filteredChats = this.chats.filter((chat) =>
       chat.value.participants.some((participant) =>
         participant.displayName.includes(username)
+
       )
     );
   }

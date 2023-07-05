@@ -22,6 +22,7 @@ import { Message } from '../firebase-send-models/message';
 import { Participant } from '../firebase-send-models/participant';
 import { UserPublic } from '../firebase-send-models/user-public';
 
+
 @Injectable({
   providedIn: 'root',
 })
@@ -48,6 +49,7 @@ export class FirebaseService {
     return collectionData(
       query(collection(this.firestore, 'chats', chatId, 'messages'), limit(100))
     ) as Observable<MessageReceive[]>;
+
   }
 
   public sendMessage(
@@ -79,6 +81,7 @@ export class FirebaseService {
         'array-contains',
         this.toFirebaseObject(participant)
       )
+
     );
 
     const objects = collectionData(ref, { idField: 'id' });
@@ -135,6 +138,7 @@ export class FirebaseService {
       objects as Observable<UserPublic[]>,
       objects as Observable<Identifiable<null>[]>
     );
+
   }
 
   private convertDocumentToIdentifiable<T>(
@@ -155,6 +159,7 @@ export class FirebaseService {
   }
 
   private convertDocumentsToIdentifiables<T>(
+
     objects: Observable<T[]>,
     ids: Observable<Identifiable<null>[]>
   ): Observable<Identifiable<T>[]> {
@@ -179,6 +184,7 @@ export class FirebaseService {
   private toFirebaseObject(object: Object): object {
     return JSON.parse(JSON.stringify(object));
   }
+
 
   // todo: add chat request
 }

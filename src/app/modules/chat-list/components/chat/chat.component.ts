@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Identifiable } from 'src/app/firebase-receive-models/Identifiable';
 import { MessageReceive } from 'src/app/firebase-receive-models/message-receive';
 import { Chat } from 'src/app/firebase-send-models/chat';
+
 import { Participant } from 'src/app/firebase-send-models/participant';
 import { FirebaseService } from 'src/app/service/firebase.service';
 import { getParticipantsWithoutCurrentUser } from 'src/app/util/helpers';
@@ -34,6 +35,7 @@ export class ChatComponent {
     },
   ];
 
+
   constructor(
     private readonly router: Router,
     private readonly route: ActivatedRoute,
@@ -52,6 +54,7 @@ export class ChatComponent {
       this.chat = routerState as Identifiable<Chat>;
     } else {
       console.log('else');
+
       this.route.params.subscribe((params) => {
         console.log(params);
         this.firebaseService
@@ -59,6 +62,7 @@ export class ChatComponent {
           .subscribe((identifiableChat) => {
             this.chat = identifiableChat;
             this.loadMessages();
+
           });
       });
     }
@@ -96,4 +100,5 @@ export class ChatComponent {
 
     return `${hours}:${minutes}`;
   }
+
 }

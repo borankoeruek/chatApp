@@ -9,5 +9,6 @@ import { AddUserDialogComponent } from './components/add-user-dialog/add-user-di
 @NgModule({
   imports: [CommonModule, IonicModule, ChatListRoutingModule],
   declarations: [ChatComponent, ChatListComponent, AddUserDialogComponent],
+
 })
 export class ChatListModule {}

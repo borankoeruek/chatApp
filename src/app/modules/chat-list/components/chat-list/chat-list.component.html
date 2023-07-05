@@ -2,6 +2,7 @@
   <ion-toolbar class="tool-bar">
     <ion-searchbar
       class="search-bar col-6"
+
       animated
       placeholder="Search"
       (ionInput)="filterChatsByUsername($event)"
@@ -40,3 +41,4 @@
 <app-add-user-dialog
   [(isModalOpen)]="displayAddUserDialog"
 ></app-add-user-dialog>
+

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
+
 import { Observable } from 'rxjs';
 import { FirebaseService } from '../service/firebase.service';
 
@@ -26,6 +27,7 @@ export class AuthGuard implements CanActivate {
     });
 
     return isLoggedIn;
+
   }
 
   private isLoggedIn(): Observable<boolean> {
