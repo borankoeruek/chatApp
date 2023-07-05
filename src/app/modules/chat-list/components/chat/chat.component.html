@@ -3,6 +3,32 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ participant.name }}</ion-title>
+    <ion-title>{{
+      getParticipant(chat.value.participants).displayName
+    }}</ion-title>
   </ion-toolbar>
 </ion-header>
+
+<ion-content [forceOverscroll]="false" class="chat-content">
+  <div class="no-messages-info">
+    <p *ngIf="messages.length === 0">Write the first message.</p>
+  </div>
+
+  <div
+    *ngFor="let message of messages"
+    class="message-container"
+    [ngStyle]="{ 'justify-content': isSender(message) ? 'end' : 'start' }"
+  >
+    <div
+      class="message"
+      [ngClass]="{ sender: isSender(message), receiver: !isSender(message) }"
+    >
+      <div class="message-content">
+        <span> {{ message.text }}</span>
+        <span class="timestamp">{{
+          getTimeFromTimestamp(message.timestamp)
+        }}</span>
+      </div>
+    </div>
+  </div>
+</ion-content>
