@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import {
   EmailAuthProvider,
-
   FacebookAuthProvider,
   GithubAuthProvider,
   GoogleAuthProvider,
@@ -32,7 +31,6 @@ export class LoginSignupComponent {
     ui.start('#firebaseui-auth-container', {
       signInOptions: [
         EmailAuthProvider.PROVIDER_ID,
-
         GoogleAuthProvider.PROVIDER_ID,
         TwitterAuthProvider.PROVIDER_ID,
         GithubAuthProvider.PROVIDER_ID,
@@ -40,7 +38,6 @@ export class LoginSignupComponent {
       ],
       callbacks: {
         uiShown: () => {
-          console.log(false);
           this.showSpinner = false;
         },
       },
