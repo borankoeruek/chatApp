@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Identifiable } from 'src/app/firebase-receive-models/Identifiable';
@@ -15,26 +15,11 @@ import { getParticipantsWithoutCurrentUser } from 'src/app/util/helpers';
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent {
+  @ViewChild('content') content: any;
+
   public chat: Identifiable<Chat>;
 
-  public messages: MessageReceive[] = [
-    {
-      text: 'tesaiushdiuashdiuashidhsaiudhasi aiudhiuashduiashd uiashdiuashdt',
-      timestamp: new Timestamp(new Date().getTime() / 1000, 123),
-      senderUid: 'EvNCwSbXCGNodjoff98CoEns4773',
-    },
-    {
-      text: 'tesaiushdiuashdiuashidhsaiudhasi aiudhiuashduiashd uiashdiuashdt',
-      timestamp: new Timestamp(new Date().getTime() / 1000, 0),
-      senderUid: '1',
-    },
-    {
-      text: 'tesaiushdiuashdiuashidhsaiudhasi aiudhiuashduiashd uiashdiuashdt',
-      timestamp: new Timestamp(new Date().getTime() / 1000, 123),
-      senderUid: 'EvNCwSbXCGNodjoff98CoEns4773',
-    },
-  ];
-
+  public messages: MessageReceive[] = [];
 
   constructor(
     private readonly router: Router,
@@ -48,21 +33,18 @@ export class ChatComponent {
 
   public loadChat(): void {
     const routerState = this.router.getCurrentNavigation()?.extras?.state;
-    console.log(routerState);
     if (routerState != null) {
-      console.log(routerState);
       this.chat = routerState as Identifiable<Chat>;
+      this.loadMessages();
     } else {
-      console.log('else');
-
       this.route.params.subscribe((params) => {
-        console.log(params);
         this.firebaseService
           .getChat(params['chatId'])
           .subscribe((identifiableChat) => {
             this.chat = identifiableChat;
             this.loadMessages();
 
+            this.scrollToBottom();
           });
       });
     }
@@ -73,7 +55,14 @@ export class ChatComponent {
       .getMessagesFromChat(this.chat.id)
       .subscribe((messages) => {
         this.messages = messages;
+
+        this.scrollToBottom();
       });
+  }
+
+  public sendMessage(text?: string | null): void {
+    if (text === null || text === undefined || text === '') return;
+    this.firebaseService.sendMessage(text, this.chat.id);
   }
 
   public isSender(message: MessageReceive): boolean {
@@ -94,11 +83,13 @@ export class ChatComponent {
       hour: '2-digit',
       minute: '2-digit',
     });
-    console.log(date);
     const hours = date.getHours();
     const minutes = date.getMinutes();
 
     return `${hours}:${minutes}`;
   }
 
+  private scrollToBottom(): void {
+    this.content.scrollToBottom(900);
+  }
 }

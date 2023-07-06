@@ -27,7 +27,6 @@ export class AuthGuard implements CanActivate {
     });
 
     return isLoggedIn;
-
   }
 
   private isLoggedIn(): Observable<boolean> {
@@ -40,7 +39,6 @@ export class AuthGuard implements CanActivate {
   }
 
   private redirectToLogin(): void {
-    console.log(2);
     this.router.navigate(['login']);
   }
 }
