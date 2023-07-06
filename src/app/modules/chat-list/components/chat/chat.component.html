@@ -9,15 +9,18 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [forceOverscroll]="false" class="chat-content">
+<ion-content [forceOverscroll]="false" class="chat-content" #content>
   <div class="no-messages-info">
     <p *ngIf="messages.length === 0">Write the first message.</p>
   </div>
 
   <div
-    *ngFor="let message of messages"
+    *ngFor="let message of messages; let i = index"
     class="message-container"
-    [ngStyle]="{ 'justify-content': isSender(message) ? 'end' : 'start' }"
+    [ngStyle]="{
+      'justify-content': isSender(message) ? 'end' : 'start',
+      'padding-top': i === 0 ? '10px' : '5px'
+    }"
   >
     <div
       class="message"
@@ -32,3 +35,18 @@
     </div>
   </div>
 </ion-content>
+
+<div class="send-message-container">
+  <ion-searchbar
+    #searchBar
+    search-icon="null"
+    animated="true"
+    placeholder="Send Message..."
+  ></ion-searchbar>
+  <ion-icon
+    name="paper-plane-outline"
+    class="send-message-button"
+    slot="end"
+    (click)="sendMessage(searchBar.value); searchBar.value = null"
+  ></ion-icon>
+</div>

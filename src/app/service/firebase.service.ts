@@ -10,6 +10,7 @@ import {
   DocumentReference,
   Firestore,
   limit,
+  orderBy,
   query,
   serverTimestamp,
   where,
@@ -21,7 +22,6 @@ import { Chat } from '../firebase-send-models/chat';
 import { Message } from '../firebase-send-models/message';
 import { Participant } from '../firebase-send-models/participant';
 import { UserPublic } from '../firebase-send-models/user-public';
-
 
 @Injectable({
   providedIn: 'root',
@@ -47,9 +47,12 @@ export class FirebaseService {
 
   public getMessagesFromChat(chatId: string): Observable<MessageReceive[]> {
     return collectionData(
-      query(collection(this.firestore, 'chats', chatId, 'messages'), limit(100))
+      query(
+        collection(this.firestore, 'chats', chatId, 'messages'),
+        limit(20),
+        orderBy('timestamp', 'asc')
+      )
     ) as Observable<MessageReceive[]>;
-
   }
 
   public sendMessage(
@@ -64,7 +67,7 @@ export class FirebaseService {
     return from(
       addDoc(
         collection(this.firestore, 'chats', chatId, 'messages'),
-        <Message>message
+        this.toFirebaseObject(message)
       )
     );
   }
@@ -81,7 +84,6 @@ export class FirebaseService {
         'array-contains',
         this.toFirebaseObject(participant)
       )
-
     );
 
     const objects = collectionData(ref, { idField: 'id' });
@@ -138,7 +140,6 @@ export class FirebaseService {
       objects as Observable<UserPublic[]>,
       objects as Observable<Identifiable<null>[]>
     );
-
   }
 
   private convertDocumentToIdentifiable<T>(
@@ -147,7 +148,6 @@ export class FirebaseService {
   ): Observable<Identifiable<T>> {
     return new Observable<Identifiable<T>>((subscription) => {
       object.subscribe((object: T) => {
-        console.log('object', object);
         const identifiable: Identifiable<T> = {
           id: document.id,
           value: object,
@@ -159,7 +159,6 @@ export class FirebaseService {
   }
 
   private convertDocumentsToIdentifiables<T>(
-
     objects: Observable<T[]>,
     ids: Observable<Identifiable<null>[]>
   ): Observable<Identifiable<T>[]> {
@@ -182,9 +181,8 @@ export class FirebaseService {
   }
 
   private toFirebaseObject(object: Object): object {
-    return JSON.parse(JSON.stringify(object));
+    return Object.assign({}, object);
   }
-
 
   // todo: add chat request
 }
