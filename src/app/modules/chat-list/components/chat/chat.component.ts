@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Identifiable } from 'src/app/firebase-receive-models/Identifiable';
 import { MessageReceive } from 'src/app/firebase-receive-models/message-receive';
 import { Chat } from 'src/app/firebase-send-models/chat';
@@ -21,6 +22,8 @@ export class ChatComponent {
 
   public messages: MessageReceive[] = [];
 
+  private subscriptions: Subscription = new Subscription();
+
   constructor(
     private readonly router: Router,
     private readonly route: ActivatedRoute,
@@ -29,6 +32,10 @@ export class ChatComponent {
 
   public ngOnInit(): void {
     this.loadChat();
+  }
+
+  public onDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   public loadChat(): void {
@@ -51,13 +58,15 @@ export class ChatComponent {
   }
 
   public loadMessages(): void {
-    this.firebaseService
-      .getMessagesFromChat(this.chat.id)
-      .subscribe((messages) => {
-        this.messages = messages;
+    this.subscriptions.add(
+      this.firebaseService
+        .getMessagesFromChat(this.chat.id)
+        .subscribe((messages) => {
+          this.messages = messages;
 
-        this.scrollToBottom();
-      });
+          this.scrollToBottom();
+        })
+    );
   }
 
   public sendMessage(text?: string | null): void {

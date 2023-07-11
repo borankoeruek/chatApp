@@ -9,9 +9,7 @@
   .message-container {
     display: flex;
     justify-content: end;
-    padding: 5px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 5px 20px;
 
     .message {
       max-width: 70%;
@@ -73,8 +71,12 @@
 .send-message-container {
   display: flex;
 
+  .send-message-input {
+    padding-right: 0px;
+  }
+
   .send-message-button {
-    width: 10%;
+    width: 15%;
     margin: auto;
     font-size: x-large;
   }

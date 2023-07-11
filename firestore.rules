@@ -33,23 +33,26 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    // function isDocumentOwner(docId) {
-    //   return request.auth.uid == docId;
-    // }
+    function isDocumentOwner(docId) {
+      return request.auth.uid == docId;
+    }
 
     // match /{document=**} {
     //   allow read, write: if IS_IN_DEBUG_MODE();
     // }
 
     match /users_public/{userId} {
-      function USER_PUBLIC_MODEL_KEYS() { return ['displayName', 'photoUrl']; }
+      // function USER_PUBLIC_MODEL_KEYS() { return ['displayName', 'photoUrl']; }
+      // photoUrl ist not updateable right now
+      function USER_PUBLIC_MODEL_KEYS() { return ['displayName']; }
 
       allow read: if isSignedIn() && validateModel(USER_PUBLIC_MODEL_KEYS());
-      allow create, update, delete: if false;
+      allow update: if isDocumentOwner(userId) && validateModel(USER_PUBLIC_MODEL_KEYS())
+
 
       match /user_private/{userId} {
 
-        allow read: false;
+        allow read: if false;
         allow write: if false;
       }
     }

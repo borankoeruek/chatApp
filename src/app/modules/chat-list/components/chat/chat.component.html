@@ -19,7 +19,9 @@
     class="message-container"
     [ngStyle]="{
       'justify-content': isSender(message) ? 'end' : 'start',
-      'padding-top': i === 0 ? '10px' : '5px'
+      'padding-top': i === 0 ? '10px' : '5px',
+      'padding-bottom': i === messages.length -1 ? '20px' : '5px',
+
     }"
   >
     <div
@@ -39,6 +41,7 @@
 <div class="send-message-container">
   <ion-searchbar
     #searchBar
+    class="send-message-input"
     search-icon="null"
     animated="true"
     placeholder="Send Message..."

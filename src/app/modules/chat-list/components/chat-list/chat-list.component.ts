@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Identifiable } from 'src/app/firebase-receive-models/Identifiable';
 import { Chat } from 'src/app/firebase-send-models/chat';
 import { Participant } from 'src/app/firebase-send-models/participant';
@@ -18,6 +19,8 @@ export class ChatListComponent {
 
   private chats: Identifiable<Chat>[] = [];
 
+  private subscriptions: Subscription = new Subscription();
+
   constructor(
     private readonly router: Router,
     private readonly route: ActivatedRoute,
@@ -28,6 +31,10 @@ export class ChatListComponent {
     this.loadChats();
   }
 
+  public onDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
+
   public openChat(chat: Identifiable<Chat>): void {
     this.router.navigate(['chat', chat.id], {
       relativeTo: this.route,
@@ -35,19 +42,14 @@ export class ChatListComponent {
     });
   }
 
-  private loadChats(): void {
-    this.firebaseService.getChats().subscribe((chats) => {
-      this.chats = chats;
-      this.filteredChats = chats;
-    });
-  }
-
   public filterChatsByUsername(event: any): void {
-    const username = event?.target?.value;
+    const displayNameToSearch = event?.target?.value;
 
     this.filteredChats = this.chats.filter((chat) =>
       chat.value.participants.some((participant) =>
-        participant.displayName.includes(username)
+        participant.displayName
+          .toLowerCase()
+          .includes(displayNameToSearch.toLowerCase())
       )
     );
   }
@@ -56,6 +58,15 @@ export class ChatListComponent {
     return getParticipantsWithoutCurrentUser(
       participants,
       this.firebaseService
+    );
+  }
+
+  private loadChats(): void {
+    this.subscriptions.add(
+      this.firebaseService.getChats().subscribe((chats) => {
+        this.chats = chats;
+        this.filteredChats = chats;
+      })
     );
   }
 }
