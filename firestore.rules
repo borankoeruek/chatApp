@@ -52,8 +52,7 @@ service cloud.firestore {
 
       match /user_private/{userId} {
 
-        allow read: if false;
-        allow write: if false;
+        allow read, write: if false;
       }
     }
 
@@ -62,7 +61,6 @@ service cloud.firestore {
       function USER_PARTICIPANT_MAP() { return { 'uid': request.auth.uid, 'displayName': request.auth.token.name }; }
 
       // todo: check if allow list is correct 
-      allow update, delete: if false;
       allow get, list: if isSignedIn() && isChatParticipant();
 
       // currently anyone can create a new chat with anyone
@@ -79,8 +77,9 @@ service cloud.firestore {
 
       match /messages/{messageId} {
         function MESSAGE_MODEL_KEYS() { return ['senderUid', 'text', "timestamp"]; }
+        function USER_PARTICIPANT_MAP() { return { 'uid': request.auth.uid, 'displayName': request.auth.token.name }; }
 
-        allow get, update, delete: if false;
+
         allow list: if isSignedIn() && isChatParticipant();
         allow create: if isSignedIn() && validateModel(MESSAGE_MODEL_KEYS()) && hasValidTimestamp() && isSender() && isChatParticipant();
         
@@ -90,7 +89,7 @@ service cloud.firestore {
 
         function isChatParticipant() {
           let chat = get(/databases/$(database)/documents/chats/$(chatId));
-          return chat != null && chat.data.participants.hasAny([request.auth.uid]);
+          return chat != null && chat.data.participants.hasAny([USER_PARTICIPANT_MAP()]);
         }
       }
     }
