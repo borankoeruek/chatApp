@@ -17,7 +17,7 @@ import fireBaseConfig from './service/firebaseConfig.json';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    IonicModule.forRoot(),
+    IonicModule.forRoot({ mode: 'ios' }),
     provideFirebaseApp(() => initializeApp(fireBaseConfig)),
     provideFirestore(() => getFirestore()),
     provideAuth(() => getAuth()),
