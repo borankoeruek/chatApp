@@ -11,3 +11,13 @@ Powered by Firebase: GoChat's robust backend is built on Firebase, leveraging it
 
 Preview GoChat:
 https://www.link.de
+
+<img src="https://github.com/borankoeruek/chatApp/assets/47578609/acf8decf-f1ac-4781-ab8f-8c127bfad1ad"  width="210" height="450">
+
+<img src="https://github.com/borankoeruek/chatApp/assets/47578609/6d27a89f-e91e-415a-ae48-7a1377b1cc6b"  width="210" height="450">
+<br>
+<img src="https://github.com/borankoeruek/chatApp/assets/47578609/4a43f75c-451c-4c29-9f1e-d7f7760f5c05"  width="420" height="450">
+
+# Dev-ToDo's
+- Add i18n translation
+- Finalize settings page
