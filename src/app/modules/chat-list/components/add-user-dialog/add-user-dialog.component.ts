@@ -12,7 +12,9 @@ export class AddUserDialogComponent {
   @Input()
   isModalOpen = false;
 
-  public users: Identifiable<UserPublic>[] = [];
+  public users: Identifiable<UserPublic>[];
+
+  public isLoading: boolean = false;
 
   @Output()
   public readonly isModalOpenChange = new EventEmitter<boolean>();
@@ -22,8 +24,10 @@ export class AddUserDialogComponent {
   public searchUsername(event: any): void {
     const username = event.target.value;
 
+    this.isLoading = true;
     this.firebaseService.searchUsername(username).subscribe((users) => {
       this.users = users;
+      this.isLoading = false;
     });
   }
 
