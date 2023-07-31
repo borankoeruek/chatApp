@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -16,7 +16,7 @@ import { getParticipantsWithoutCurrentUser } from 'src/app/util/helpers';
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent {
-  @ViewChild('content') content: any;
+  @ViewChild('messageList') messageList: ElementRef;
 
   public chat: Identifiable<Chat>;
 
@@ -71,7 +71,9 @@ export class ChatComponent {
 
   public sendMessage(text?: string | null): void {
     if (text === null || text === undefined || text === '') return;
-    this.firebaseService.sendMessage(text, this.chat.id);
+    this.firebaseService.sendMessage(text, this.chat.id).subscribe(() => {
+      this.scrollToBottom();
+    });
   }
 
   public isSender(message: MessageReceive): boolean {
@@ -86,6 +88,8 @@ export class ChatComponent {
   }
 
   public getTimeFromTimestamp(timestamp: Timestamp): string {
+    if (timestamp === null || timestamp === undefined) return '';
+
     const date = timestamp.toDate();
 
     date.toLocaleDateString('de-DE', {
@@ -99,6 +103,11 @@ export class ChatComponent {
   }
 
   private scrollToBottom(): void {
-    this.content.scrollToBottom(900);
+    setTimeout(() => {
+      this.messageList?.nativeElement.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth',
+      });
+    }, 500);
   }
 }

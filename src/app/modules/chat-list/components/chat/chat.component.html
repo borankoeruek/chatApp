@@ -9,47 +9,47 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [forceOverscroll]="false" class="chat-content" #content>
+<ion-content [forceOverscroll]="false" class="chat-content">
   <div class="no-messages-info">
     <p *ngIf="messages.length === 0">Write the first message.</p>
   </div>
 
-  <div
-    *ngFor="let message of messages; let i = index"
-    class="message-container"
-    [ngStyle]="{
+  <div class="message-list" #messageList>
+    <div
+      *ngFor="let message of messages; let i = index; let last = last"
+      class="message-container"
+      [ngStyle]="{
       'justify-content': isSender(message) ? 'end' : 'start',
       'padding-top': i === 0 ? '10px' : '5px',
-      'padding-bottom': i === messages.length -1 ? '20px' : '5px',
-
+      'padding-bottom': last ? '20px' : '5px',
     }"
-  >
-    <div
-      class="message"
-      [ngClass]="{ sender: isSender(message), receiver: !isSender(message) }"
     >
-      <div class="message-content">
-        <span> {{ message.text }}</span>
-        <span class="timestamp">{{
-          getTimeFromTimestamp(message.timestamp)
-        }}</span>
+      <div
+        class="message"
+        [ngClass]="{ sender: isSender(message), receiver: !isSender(message) }"
+      >
+        <div class="message-content">
+          <span> {{ message.text }}</span>
+          <span class="timestamp">{{
+            getTimeFromTimestamp(message.timestamp)
+          }}</span>
+        </div>
       </div>
     </div>
   </div>
+  <div class="send-message-container">
+    <ion-searchbar
+      #searchBar
+      class="send-message-input"
+      search-icon="null"
+      animated="true"
+      placeholder="Send Message..."
+    ></ion-searchbar>
+    <ion-icon
+      name="paper-plane-outline"
+      class="send-message-button"
+      slot="end"
+      (click)="sendMessage(searchBar.value); searchBar.value = null"
+    ></ion-icon>
+  </div>
 </ion-content>
-
-<div class="send-message-container">
-  <ion-searchbar
-    #searchBar
-    class="send-message-input"
-    search-icon="null"
-    animated="true"
-    placeholder="Send Message..."
-  ></ion-searchbar>
-  <ion-icon
-    name="paper-plane-outline"
-    class="send-message-button"
-    slot="end"
-    (click)="sendMessage(searchBar.value); searchBar.value = null"
-  ></ion-icon>
-</div>

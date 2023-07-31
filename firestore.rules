@@ -46,12 +46,11 @@ service cloud.firestore {
       // photoUrl ist not updateable right now
       function USER_PUBLIC_MODEL_KEYS() { return ['displayName']; }
 
-      allow read: if isSignedIn() && validateModel(USER_PUBLIC_MODEL_KEYS());
+      allow read: if isSignedIn();
       allow update: if isDocumentOwner(userId) && validateModel(USER_PUBLIC_MODEL_KEYS())
 
 
       match /user_private/{userId} {
-
         allow read, write: if false;
       }
     }
