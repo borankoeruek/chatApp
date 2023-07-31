@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Auth, User } from '@angular/fire/auth';
+import { Auth, updateProfile, User } from '@angular/fire/auth';
 import {
   addDoc,
   collection,
@@ -150,7 +150,9 @@ export class FirebaseService {
     userPublic.photoURL = user.photoURL as string;
 
     return concat(
-      this.auth.updateCurrentUser(this.auth.currentUser),
+      updateProfile(this.auth.currentUser as User, {
+        ...userPublic,
+      }),
       updateDoc(ref, this.toFirebaseObject(userPublic))
     );
   }
