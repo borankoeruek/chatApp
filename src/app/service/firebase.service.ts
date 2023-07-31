@@ -13,9 +13,10 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  updateDoc,
   where,
 } from '@angular/fire/firestore';
-import { combineLatest, from, Observable } from 'rxjs';
+import { combineLatest, concat, from, Observable } from 'rxjs';
 import { Identifiable } from '../firebase-receive-models/Identifiable';
 import { MessageReceive } from '../firebase-receive-models/message-receive';
 import { Chat } from '../firebase-send-models/chat';
@@ -36,7 +37,7 @@ export class FirebaseService {
     // todo:
   }
 
-  public getCurrentUserState() {
+  public getCurrentUserState(): Observable<User | null> {
     return new Observable<User | null>((subscription) => {
       this.auth.onAuthStateChanged((user) => {
         subscription.next(user);
@@ -125,7 +126,6 @@ export class FirebaseService {
     );
   }
 
-  // todo: add username search
   public searchUsername(
     displayName: string
   ): Observable<Identifiable<UserPublic>[]> {
@@ -139,6 +139,19 @@ export class FirebaseService {
     return this.convertDocumentsToIdentifiables<UserPublic>(
       objects as Observable<UserPublic[]>,
       objects as Observable<Identifiable<null>[]>
+    );
+  }
+
+  public updateUser(user: User): Observable<void> {
+    const ref = doc(this.firestore, 'users_public', user.uid);
+
+    const userPublic = new UserPublic();
+    userPublic.displayName = user.displayName as string;
+    userPublic.photoUrl = user.photoURL as string;
+
+    return concat(
+      this.auth.updateCurrentUser(this.auth.currentUser),
+      updateDoc(ref, this.toFirebaseObject(userPublic))
     );
   }
 
@@ -183,6 +196,4 @@ export class FirebaseService {
   private toFirebaseObject(object: Object): object {
     return Object.assign({}, object);
   }
-
-  // todo: add chat request
 }
