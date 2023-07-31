@@ -8,7 +8,7 @@ export const createUserDocAfterAuth = region('europe-west3')
       .collection('users_public')
       .doc(user.uid)
       .create({
-        photoUrl: user.photoURL,
+        photoURL: user.photoURL,
         displayName: user.displayName,
       })
       .catch((error) => {

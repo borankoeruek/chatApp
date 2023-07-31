@@ -1,11 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  EmailAuthProvider,
-  FacebookAuthProvider,
-  GithubAuthProvider,
-  GoogleAuthProvider,
-  TwitterAuthProvider,
-} from '@angular/fire/auth';
+import { GoogleAuthProvider } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { auth } from 'firebaseui';
 import { FirebaseService } from 'src/app/service/firebase.service';
@@ -29,13 +23,7 @@ export class LoginSignupComponent {
     const ui = new auth.AuthUI(this.firebaseService.auth);
 
     ui.start('#firebaseui-auth-container', {
-      signInOptions: [
-        EmailAuthProvider.PROVIDER_ID,
-        GoogleAuthProvider.PROVIDER_ID,
-        TwitterAuthProvider.PROVIDER_ID,
-        GithubAuthProvider.PROVIDER_ID,
-        FacebookAuthProvider.PROVIDER_ID,
-      ],
+      signInOptions: [GoogleAuthProvider.PROVIDER_ID],
       callbacks: {
         uiShown: () => {
           this.showSpinner = false;
