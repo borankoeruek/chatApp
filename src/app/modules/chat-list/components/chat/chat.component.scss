@@ -7,7 +7,6 @@
   .message-list {
     background-color: #e6e6e6;
     overflow-y: auto;
-    height: calc(100vh - 155px);
 
     .message-container {
       display: flex;
@@ -18,9 +17,9 @@
         max-width: 70%;
         width: fit-content;
         position: relative;
-        padding: 20px 30px;
+        padding: 10px 15px;
         padding-bottom: 10px;
-        border-radius: 50rem;
+        border-radius: 30px;
 
         .message-content {
           display: flex;
@@ -29,6 +28,7 @@
           .timestamp {
             margin-left: auto;
             color: lightslategray;
+            font-size: 13px;
           }
         }
 
@@ -41,7 +41,7 @@
             display: block;
             position: absolute;
             top: 100%;
-            width: 25px;
+            width: 10px;
             height: 10px;
             background-color: inherit;
 
@@ -59,7 +59,7 @@
             display: block;
             position: absolute;
             top: 100%;
-            width: 25px;
+            width: 10px;
             height: 10px;
             background-color: inherit;
 
@@ -76,7 +76,7 @@
   display: flex;
 
   .send-message-input {
-    padding-right: 0px;
+    padding-right: 0;
   }
 
   .send-message-button {

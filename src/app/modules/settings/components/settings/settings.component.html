@@ -1,23 +1,39 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Settings</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="saveUser()"> Speichern </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <div class="image-div">
-    <ion-card class="image-card" (click)="openSheet()">
-      <ion-img src="https://ionicframework.com/docs/img/demos/avatar.svg"></ion-img>
+  <form *ngIf="userFormGroup" [formGroup]="userFormGroup">
+    <div class="image-div">
+      <ion-card class="image-card" (click)="openSheet()">
+        <ion-img src="{{ userImage }}"></ion-img>
+      </ion-card>
+    </div>
+    <ion-card>
+      <ion-list lines="full">
+        <ion-item>
+          <ion-input label="Benutzername" placeholder="Jumbo" labelPlacement="stacked" formControlName="displayName"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Telefonnummer" placeholder="0123/456789" labelPlacement="stacked" formControlName="phoneNumber"></ion-input>
+        </ion-item>
+        <!--      <ion-item>-->
+        <!--        <ion-input label="Benutzername" labelPlacement="floating" [clearInput]="true"></ion-input>-->
+        <!--      </ion-item>-->
+      </ion-list>
     </ion-card>
-  </div>
-  <ion-card>
-    <ion-list lines="full">
-      <ion-item>
-        <ion-input label="Benutzername" labelPlacement="floating" [clearInput]="true"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input label="Benutzername" labelPlacement="floating" [clearInput]="true"></ion-input>
-      </ion-item>
-    </ion-list>
-  </ion-card>
+
+    <ion-card>
+      <ion-list lines="full">
+        <ion-item>
+          <ion-input label="E-Mail" labelPlacement="floating" formControlName="email"></ion-input>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+  </form>
 
 </ion-content>

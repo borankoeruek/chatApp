@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -9,13 +9,14 @@ import { Chat } from 'src/app/firebase-send-models/chat';
 import { Participant } from 'src/app/firebase-send-models/participant';
 import { FirebaseService } from 'src/app/service/firebase.service';
 import { getParticipantsWithoutCurrentUser } from 'src/app/util/helpers';
+import {GlobalService} from "../../../../service/global.service";
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
 })
-export class ChatComponent {
+export class ChatComponent implements OnInit, OnDestroy {
   @ViewChild('messageList') messageList: ElementRef;
 
   public chat: Identifiable<Chat>;
@@ -27,15 +28,18 @@ export class ChatComponent {
   constructor(
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly firebaseService: FirebaseService
+    private readonly firebaseService: FirebaseService,
+    private readonly global: GlobalService
   ) {}
 
   public ngOnInit(): void {
     this.loadChat();
+    this.global.hideTabs()
   }
 
-  public onDestroy(): void {
+  public ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    this.global.showTabs()
   }
 
   public loadChat(): void {

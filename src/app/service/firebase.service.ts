@@ -147,7 +147,7 @@ export class FirebaseService {
 
     const userPublic = new UserPublic();
     userPublic.displayName = user.displayName as string;
-    userPublic.photoUrl = user.photoURL as string;
+    userPublic.photoURL = user.photoURL as string;
 
     return concat(
       this.auth.updateCurrentUser(this.auth.currentUser),

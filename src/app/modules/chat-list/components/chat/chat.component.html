@@ -3,9 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{
-      getParticipant(chat.value.participants).displayName
-    }}</ion-title>
+    <ion-title>{{ getParticipant(chat.value.participants).displayName }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -30,13 +28,14 @@
       >
         <div class="message-content">
           <span> {{ message.text }}</span>
-          <span class="timestamp">{{
-            getTimeFromTimestamp(message.timestamp)
-          }}</span>
+          <span class="timestamp">{{ getTimeFromTimestamp(message.timestamp) }}</span>
         </div>
       </div>
     </div>
   </div>
+</ion-content>
+
+<ion-footer>
   <div class="send-message-container">
     <ion-searchbar
       #searchBar
@@ -52,4 +51,4 @@
       (click)="sendMessage(searchBar.value); searchBar.value = null"
     ></ion-icon>
   </div>
-</ion-content>
+</ion-footer>

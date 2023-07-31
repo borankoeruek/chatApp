@@ -11,17 +11,19 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import fireBaseConfig from './service/firebaseConfig.json';
+import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [AppComponent, ToolBarComponent, SettingsComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    IonicModule.forRoot({ mode: 'ios' }),
-    provideFirebaseApp(() => initializeApp(fireBaseConfig)),
-    provideFirestore(() => getFirestore()),
-    provideAuth(() => getAuth()),
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        IonicModule.forRoot({mode: 'ios'}),
+        provideFirebaseApp(() => initializeApp(fireBaseConfig)),
+        provideFirestore(() => getFirestore()),
+        provideAuth(() => getAuth()),
+        ReactiveFormsModule,
+    ],
   providers: [],
   bootstrap: [AppComponent],
 })

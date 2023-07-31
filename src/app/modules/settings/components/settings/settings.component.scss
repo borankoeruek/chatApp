@@ -1,7 +1,5 @@
 ion-item:last-child {
-  --inner-border-width: 0;
-}
-ion-img {
+  --border-width: 0 0 0 0 !important;
 }
 .image-div {
   display: flex;
@@ -13,4 +11,7 @@ ion-img {
 }
 .image-card:hover {
   background-color: rgba(255,255,255,0.5);
+}
+.myToast {
+  --background:#1833FF;
 }
