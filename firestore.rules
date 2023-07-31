@@ -33,24 +33,25 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    // function isDocumentOwner(docId) {
-    //   return request.auth.uid == docId;
-    // }
+    function isDocumentOwner(docId) {
+      return request.auth.uid == docId;
+    }
 
     // match /{document=**} {
     //   allow read, write: if IS_IN_DEBUG_MODE();
     // }
 
     match /users_public/{userId} {
-      function USER_PUBLIC_MODEL_KEYS() { return ['displayName', 'photoUrl']; }
+      // function USER_PUBLIC_MODEL_KEYS() { return ['displayName', 'photoUrl']; }
+      // photoUrl ist not updateable right now
+      function USER_PUBLIC_MODEL_KEYS() { return ['displayName']; }
 
-      allow read: if isSignedIn() && validateModel(USER_PUBLIC_MODEL_KEYS());
-      allow create, update, delete: if false;
+      allow read: if isSignedIn();
+      allow update: if isDocumentOwner(userId) && validateModel(USER_PUBLIC_MODEL_KEYS())
+
 
       match /user_private/{userId} {
-
-        allow read: false;
-        allow write: if false;
+        allow read, write: if false;
       }
     }
 
@@ -59,7 +60,6 @@ service cloud.firestore {
       function USER_PARTICIPANT_MAP() { return { 'uid': request.auth.uid, 'displayName': request.auth.token.name }; }
 
       // todo: check if allow list is correct 
-      allow update, delete: if false;
       allow get, list: if isSignedIn() && isChatParticipant();
 
       // currently anyone can create a new chat with anyone
@@ -76,8 +76,9 @@ service cloud.firestore {
 
       match /messages/{messageId} {
         function MESSAGE_MODEL_KEYS() { return ['senderUid', 'text', "timestamp"]; }
+        function USER_PARTICIPANT_MAP() { return { 'uid': request.auth.uid, 'displayName': request.auth.token.name }; }
 
-        allow get, update, delete: if false;
+
         allow list: if isSignedIn() && isChatParticipant();
         allow create: if isSignedIn() && validateModel(MESSAGE_MODEL_KEYS()) && hasValidTimestamp() && isSender() && isChatParticipant();
         
@@ -87,7 +88,7 @@ service cloud.firestore {
 
         function isChatParticipant() {
           let chat = get(/databases/$(database)/documents/chats/$(chatId));
-          return chat != null && chat.data.participants.hasAny([request.auth.uid]);
+          return chat != null && chat.data.participants.hasAny([USER_PARTICIPANT_MAP()]);
         }
       }
     }
