@@ -1,23 +1,34 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Settings</ion-title>
+    <ion-title>
+      {{ "settings.settings" | translate }}
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <div class="image-div">
     <ion-card class="image-card" (click)="openSheet()">
-      <ion-img src="https://ionicframework.com/docs/img/demos/avatar.svg"></ion-img>
+      <ion-img
+        src="https://ionicframework.com/docs/img/demos/avatar.svg"
+      ></ion-img>
     </ion-card>
   </div>
   <ion-card>
     <ion-list lines="full">
       <ion-item>
-        <ion-input label="Benutzername" labelPlacement="floating" [clearInput]="true"></ion-input>
+        <ion-input
+          label="{{ 'settings.username' | translate }}"
+          labelPlacement="floating"
+          [clearInput]="true"
+        ></ion-input>
       </ion-item>
       <ion-item>
-        <ion-input label="Benutzername" labelPlacement="floating" [clearInput]="true"></ion-input>
+        <ion-input
+          label="{{ 'settings.username' | translate }}"
+          labelPlacement="floating"
+          [clearInput]="true"
+        ></ion-input>
       </ion-item>
     </ion-list>
   </ion-card>
-
 </ion-content>

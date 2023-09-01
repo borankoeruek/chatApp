@@ -42,9 +42,7 @@ service cloud.firestore {
     // }
 
     match /users_public/{userId} {
-      // function USER_PUBLIC_MODEL_KEYS() { return ['displayName', 'photoUrl']; }
-      // photoUrl ist not updateable right now
-      function USER_PUBLIC_MODEL_KEYS() { return ['displayName']; }
+      function USER_PUBLIC_MODEL_KEYS() { return ['displayName', 'photoUrl']; }
 
       allow read: if isSignedIn();
       allow update: if isDocumentOwner(userId) && validateModel(USER_PUBLIC_MODEL_KEYS())

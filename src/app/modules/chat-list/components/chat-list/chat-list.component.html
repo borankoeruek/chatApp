@@ -16,7 +16,9 @@
 </ion-header>
 <ion-content [forceOverscroll]="false">
   <ion-item *ngIf="filteredChats.length === 0">
-    <ion-label> No chats found. Try adding a new user. </ion-label>
+    <ion-label class="app-italic">
+      {{ "chats.noChatsFound" | translate }}
+    </ion-label>
   </ion-item>
 
   <ion-item
