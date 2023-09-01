@@ -1,0 +1,19 @@
+{
+  "toolBar": {
+    "chats": "Chats",
+    "settings": "Einstellungen"
+  },
+  "settings": {
+    "settings": "Einstellungen",
+    "username": "Benutzername"
+  },
+  "login": {
+    "login": "Anmelden"
+  },
+  "chats": {
+    "createNewChat": "Neuen Chat erstellen",
+    "noUserFound": "Keinen Benutzer gefunden",
+    "writeFirstMessage": "Schreibe die erste Nachricht",
+    "noChatsFound": "Keine Chats gefunden, erstelle einen neuen Chat"
+  }
+}

@@ -12,6 +12,10 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import fireBaseConfig from './service/firebaseConfig.json';
 
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
 @NgModule({
   declarations: [AppComponent, ToolBarComponent, SettingsComponent],
   imports: [
@@ -21,8 +25,21 @@ import fireBaseConfig from './service/firebaseConfig.json';
     provideFirebaseApp(() => initializeApp(fireBaseConfig)),
     provideFirestore(() => getFirestore()),
     provideAuth(() => getAuth()),
+    HttpClientModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+// required for AOT compilation
+export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader(http);
+}
