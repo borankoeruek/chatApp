@@ -19,5 +19,5 @@ Preview GoChat:
 <img src="https://github.com/borankoeruek/chatApp/assets/47578609/4a43f75c-451c-4c29-9f1e-d7f7760f5c05"  width="420" height="450">
 
 # Dev-ToDo's
-- Add i18n translation
+- Add i18n translation ✅
 - Finalize settings page
