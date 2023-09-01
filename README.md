@@ -10,7 +10,7 @@ ChatGPT Integration: Experience the future of messaging with ChatGPT, an intelli
 Powered by Firebase: GoChat's robust backend is built on Firebase, leveraging its cutting-edge features such as Authentication, Firestore, and Functions. This ensures enhanced security, real-time data updates, and reliable performance.
 
 Preview GoChat:
-https://www.link.de
+(https://chatapp-mb.firebaseapp.com/)
 
 <img src="https://github.com/borankoeruek/chatApp/assets/47578609/acf8decf-f1ac-4781-ab8f-8c127bfad1ad"  width="210" height="450">
 
