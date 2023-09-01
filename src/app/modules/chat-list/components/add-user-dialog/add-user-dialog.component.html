@@ -2,7 +2,9 @@
   <ng-template>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Create New Chat</ion-title>
+        <ion-title>
+          {{ "chats.createNewChat" | translate }}
+        </ion-title>
         <ion-buttons slot="end">
           <ion-button (click)="setOpen(false)">Close</ion-button>
         </ion-buttons>
@@ -34,7 +36,11 @@
       </ion-item>
 
       <div *ngIf="users?.length === 0">
-        <ion-item><ion-label> No users found. </ion-label></ion-item>
+        <ion-item>
+          <ion-label class="app-italic">
+            {{ "chats.noUserFound" | translate }}
+          </ion-label></ion-item
+        >
       </div>
     </ion-content>
   </ng-template>
